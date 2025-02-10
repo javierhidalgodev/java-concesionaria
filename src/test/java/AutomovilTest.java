@@ -2,7 +2,7 @@
 import com.mycompany.concesionaria.logica.Automovil;
 import com.mycompany.concesionaria.logica.Controladora;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +17,8 @@ public class AutomovilTest {
     @BeforeAll
     public static void setUp() {
         controladora = new Controladora();
+        
+        System.out.println("VECES QUE ME IMPRIMO");
     }
 
     @Test
@@ -29,7 +31,7 @@ public class AutomovilTest {
 
         List<Automovil> autosDespues = controladora.findAllAutomovil();
 
-        Assertions.assertEquals(autosAntes.size() + 1, autosDespues.size());
+        assertEquals(autosAntes.size() + 1, autosDespues.size());
     }
 
 //    @Test
@@ -40,7 +42,7 @@ public class AutomovilTest {
 //
 //        List<Automovil> autosDespues = controladora.findAllAutomovil();
 //
-//        Assertions.assertEquals(autosAntes.size() - 1, autosDespues.size());
+//        assertEquals(autosAntes.size() - 1, autosDespues.size());
 //    }
 
     @Test
@@ -55,9 +57,6 @@ public class AutomovilTest {
         List<Automovil> autosDespues = controladora.findAllAutomovil();
         System.out.println(autosDespues.toString());
         
-        Assertions.assertEquals("ARONA", autosDespues.get(0).getModel());
+        assertEquals("ARONA", autosDespues.get(0).getModel());
     }
-    
-    @Test
-    public void find
 }
