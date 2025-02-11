@@ -1,6 +1,6 @@
 package com.mycompany.concesionaria;
 
-import com.mycompany.concesionaria.logica.Controladora;
+import com.mycompany.concesionaria.igu.Home;
 
 /**
  *
@@ -10,7 +10,8 @@ public class Concesionaria {
 
     public static void main(String[] args) {
         
-        Controladora controladora = new Controladora();
+        Home homeFrame = new Home();
+        homeFrame.setVisible(true);
         
     }
 }
