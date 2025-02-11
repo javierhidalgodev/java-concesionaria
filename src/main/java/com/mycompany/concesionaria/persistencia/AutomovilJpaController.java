@@ -3,12 +3,14 @@ package com.mycompany.concesionaria.persistencia;
 import com.mycompany.concesionaria.logica.Automovil;
 import com.mycompany.concesionaria.persistencia.exceptions.NonexistentEntityException;
 import java.io.Serializable;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -31,19 +33,48 @@ public class AutomovilJpaController implements Serializable {
         emf = Persistence.createEntityManagerFactory("concesionariaJPU");
     }
 
-    public void create(Automovil automovil) {
+    public void create(Automovil automovil) throws SQLIntegrityConstraintViolationException {
+//        if (findByPlate(automovil.getPlate()) == null) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(automovil);
             em.getTransaction().commit();
+
+//                return true;
         } finally {
             if (em != null) {
                 em.close();
             }
         }
+//        } else {
+//            System.err.println("Esa placa ya ha sido registrada");
+//            return false;
+//        }
     }
+
+    // Con función intermedia
+//    public boolean create(Automovil automovil) {
+//        if (findByPlate(automovil.getPlate()) == null) {
+//            EntityManager em = null;
+//            try {
+//                em = getEntityManager();
+//                em.getTransaction().begin();
+//                em.persist(automovil);
+//                em.getTransaction().commit();
+//
+//                return true;
+//            } finally {
+//                if (em != null) {
+//                    em.close();
+//                }
+//            }
+//        } else {
+//            System.err.println("Esa placa ya ha sido registrada");
+//            return false;
+//        }
+//    }
 
     public void edit(Automovil automovil) throws NonexistentEntityException, Exception {
         EntityManager em = null;
@@ -111,6 +142,19 @@ public class AutomovilJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+
+    public Automovil findByPlate(String plate) {
+        EntityManager em = getEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Automovil.class);
+        Root<Automovil> root = cq.from(Automovil.class);
+
+        cq.select(root).where(cb.like(root.get("plate"), plate));
+
+        List<Automovil> autos = em.createQuery(cq).getResultList();
+        return autos.isEmpty() ? null : autos.get(0);
     }
 
     public Automovil findAutomovil(int id) {

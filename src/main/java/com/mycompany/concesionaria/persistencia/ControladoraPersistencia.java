@@ -2,6 +2,7 @@ package com.mycompany.concesionaria.persistencia;
 
 import com.mycompany.concesionaria.logica.Automovil;
 import com.mycompany.concesionaria.persistencia.exceptions.NonexistentEntityException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,7 +18,11 @@ public class ControladoraPersistencia {
     
     // Automovil
     public void createAutomovil(Automovil automovil) {
-        automovilJPA.create(automovil);
+        try {
+            automovilJPA.create(automovil);
+        } catch (SQLIntegrityConstraintViolationException ex) {
+            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public void destroyAutomovil(int id) {
@@ -42,5 +47,9 @@ public class ControladoraPersistencia {
 
     public List<Automovil> findAllAutomovil() {
         return automovilJPA.findAutomovilEntities();
+    }
+    
+    public Automovil findAutoByPlate(String plate) {
+        return automovilJPA.findByPlate(plate);
     }
 }

@@ -32,4 +32,8 @@ public class Controladora {
     public List<Automovil> findAllAutomovil() {
         return controladoraPersistencia.findAllAutomovil();
     }
+    
+    public Automovil findAutoByPlate(String plate) {
+        return controladoraPersistencia.findAutoByPlate(plate);
+    }
 }
