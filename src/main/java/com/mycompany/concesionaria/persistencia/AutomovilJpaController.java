@@ -75,7 +75,6 @@ public class AutomovilJpaController implements Serializable {
 //            return false;
 //        }
 //    }
-
     public void edit(Automovil automovil) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
@@ -144,19 +143,6 @@ public class AutomovilJpaController implements Serializable {
         }
     }
 
-    public Automovil findByPlate(String plate) {
-        EntityManager em = getEntityManager();
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery cq = cb.createQuery(Automovil.class);
-        Root<Automovil> root = cq.from(Automovil.class);
-
-        cq.select(root).where(cb.like(root.get("plate"), plate));
-
-        List<Automovil> autos = em.createQuery(cq).getResultList();
-        return autos.isEmpty() ? null : autos.get(0);
-    }
-
     public Automovil findAutomovil(int id) {
         EntityManager em = getEntityManager();
         try {
@@ -176,6 +162,54 @@ public class AutomovilJpaController implements Serializable {
             return ((Long) q.getSingleResult()).intValue();
         } finally {
             em.close();
+        }
+    }
+
+    public Automovil findByPlate(String plate) {
+        EntityManager em = getEntityManager();
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery cq = cb.createQuery(Automovil.class);
+        Root<Automovil> root = cq.from(Automovil.class);
+
+        cq.select(root).where(cb.like(root.get("plate"), plate));
+
+        List<Automovil> autos = em.createQuery(cq).getResultList();
+        return autos.isEmpty() ? null : autos.get(0);
+    }
+
+    public void destroyByPlate(String plate) throws NonexistentEntityException {
+        EntityManager em = getEntityManager();
+
+        try {
+            em.getTransaction().begin();
+
+            // Buscar el automóvil por su placa
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Automovil> cq = cb.createQuery(Automovil.class);
+            Root<Automovil> root = cq.from(Automovil.class);
+            cq.select(root).where(cb.equal(root.get("plate"), plate));
+
+            List<Automovil> autos = em.createQuery(cq).getResultList();
+
+            if (!autos.isEmpty()) {
+                Automovil automovil = autos.get(0); // Tomamos el primer resultado
+
+                // Asegurar que la entidad esté administrada antes de eliminarla
+                if (!em.contains(automovil)) {
+                    automovil = em.merge(automovil);
+                }
+
+                em.remove(automovil);
+                em.getTransaction().commit();
+            } else {
+                throw new NonexistentEntityException("No se encontró un automóvil con la placa: " + plate);
+            }
+        } catch (Exception e) {
+            em.getTransaction().rollback(); // En caso de error, deshacer cambios
+            throw e;
+        } finally {
+            em.close(); // Cerrar EntityManager para evitar fugas de memoria
         }
     }
 

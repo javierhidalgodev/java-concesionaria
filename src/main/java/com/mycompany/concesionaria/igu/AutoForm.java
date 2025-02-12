@@ -40,6 +40,7 @@ public class AutoForm extends javax.swing.JFrame {
         txtModelo.setText(auto.getModel());
         txtColor.setText(auto.getColor());
         txtPlaca.setText(auto.getPlate());
+        txtPlaca.setEnabled(false);
         btnCreate.setText("EDIT");
 
         setTitle("Auto Form");
@@ -267,36 +268,9 @@ public class AutoForm extends javax.swing.JFrame {
 
         if (!marca.isEmpty() && !modelo.isEmpty() && !color.isEmpty() && !placa.isEmpty()) {
             if (!isEditing) {
-                Automovil auto = new Automovil(marca, modelo, color, placa);
-
-                try {
-                    controladora.createAutomovil(auto);
-
-                    txtMarca.setText("");
-                    txtModelo.setText("");
-                    txtColor.setText("");
-                    txtPlaca.setText("");
-
-                    JOptionPane.showMessageDialog(pPrincipal, "Coche añadido correctamente", "Operación exitosa", 1);
-                } catch (Exception e) {
-                    System.err.println(e);
-                    JOptionPane.showMessageDialog(pPrincipal, "Ya se ha registrado un auto con esa placa.\nSi cree que se trata de un error, póngase en contacto con nosotros.", "Error", 0);
-                }
+                createAuto(marca, modelo, color, placa);
             } else {
-                automovil.setBrand(marca);
-                automovil.setModel(modelo);
-                automovil.setColor(color);
-                automovil.setPlate(placa);
-
-                try {
-                    controladora.editAutomovil(automovil);
-                    ((DataView) parentFrame).initTable();
-                    
-                    JOptionPane.showMessageDialog(pPrincipal, "Automóvil editado con éxito", "Actualización exitosa", JOptionPane.INFORMATION_MESSAGE);
-                    dispose();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(pPrincipal, "No se pudo realizar la operación. Inténtelo de nuevo más tarde", "Error al actualizar", JOptionPane.ERROR_MESSAGE);
-                }
+                editAuto(marca, modelo, color);
             }
 
         } else {
@@ -304,6 +278,48 @@ public class AutoForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnCreateActionPerformed
 
+    private void createAuto(String marca, String modelo, String color, String placa) {
+        Automovil auto = new Automovil(marca, modelo, color, placa);
+
+        try {
+            controladora.createAutomovil(auto);
+
+            txtMarca.setText("");
+            txtModelo.setText("");
+            txtColor.setText("");
+            txtPlaca.setText("");
+
+            JOptionPane.showMessageDialog(pPrincipal, "Coche añadido correctamente", "Operación exitosa", 1);
+        } catch (Exception e) {
+            System.err.println(e);
+            JOptionPane.showMessageDialog(pPrincipal, "Ya se ha registrado un auto con esa placa.\nSi cree que se trata de un error, póngase en contacto con nosotros.", "Error", 0);
+        }
+    }
+
+    private void editAuto(String marca, String modelo, String color) {
+        if (dataChanges(automovil, marca, modelo, color)) {
+            automovil.setBrand(marca);
+            automovil.setModel(modelo);
+            automovil.setColor(color);
+
+            try {
+                controladora.editAutomovil(automovil);
+                ((DataView) parentFrame).initTable();
+
+                JOptionPane.showMessageDialog(pPrincipal, "Automóvil editado con éxito", "Actualización exitosa", JOptionPane.INFORMATION_MESSAGE);
+                dispose();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(pPrincipal, "No se pudo realizar la operación. Inténtelo de nuevo más tarde", "Error al actualizar", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(pPrincipal, "No ha realizado ningún cambio. Modifique alguno de los campos para proceder con la operación", "Error al actualizar", JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    private boolean dataChanges(Automovil automovil, String marca, String modelo, String color) {
+        return !automovil.getBrand().equals(marca) || !automovil.getModel().equals(modelo) || !automovil.getColor().equals(color);
+    }
+    
     @Override
     public void dispose() {
         if (parentFrame != null) {

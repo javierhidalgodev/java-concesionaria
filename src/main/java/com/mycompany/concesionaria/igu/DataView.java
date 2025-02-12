@@ -4,6 +4,7 @@ import com.mycompany.concesionaria.logica.Automovil;
 import com.mycompany.concesionaria.logica.Controladora;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -127,6 +128,11 @@ public class DataView extends javax.swing.JFrame {
         pData.add(btnEdit, gridBagConstraints);
 
         btnDelete.setText("DELETE");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
@@ -216,12 +222,12 @@ public class DataView extends javax.swing.JFrame {
             if (tableData.getSelectedRow() != -1) {
                 int selectedRow = tableData.getSelectedRow();
                 String placa = (String) tableData.getValueAt(selectedRow, 3);
-                
+
                 try {
                     Automovil auto = controladora.findAutoByPlate(placa);
-                    
+
                     AutoForm autoFormFrame = new AutoForm(controladora, this, auto);
-                    
+
                     autoFormFrame.setVisible(true);
                     this.setVisible(false);
                 } catch (Exception e) {
@@ -230,6 +236,29 @@ public class DataView extends javax.swing.JFrame {
         }
 
     }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        if (tableData.getRowCount() > 0) {
+            if (tableData.getSelectedRow() != -1) {
+                int confirmation = JOptionPane.showConfirmDialog(pPrincipal, "¿Estás seguro que deseas eliminar este elemento? La operación es irreversible", "Confirmación de borrado", JOptionPane.YES_NO_OPTION);
+               
+                if(confirmation == 0) {
+                    int row = tableData.getSelectedRow();
+                    String plate = (String) tableData.getValueAt(row, 3);
+
+                    try {
+                        controladora.destroyAutomovilByPlate(plate);
+                        initTable();
+                    } catch (Exception e) {
+                        System.out.println("ERROR");
+                    }                    
+                }
+                
+            } else {
+                JOptionPane.showMessageDialog(pPrincipal, "Seleccione un registro para realizar la operación", "Falta registro", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     @Override
     public void dispose() {

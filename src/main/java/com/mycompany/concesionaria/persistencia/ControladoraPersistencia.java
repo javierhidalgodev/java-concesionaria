@@ -15,7 +15,6 @@ public class ControladoraPersistencia {
 
     AutomovilJpaController automovilJPA = new AutomovilJpaController();
 
-    
     // Automovil
     public void createAutomovil(Automovil automovil) {
         try {
@@ -48,8 +47,16 @@ public class ControladoraPersistencia {
     public List<Automovil> findAllAutomovil() {
         return automovilJPA.findAutomovilEntities();
     }
-    
+
     public Automovil findAutoByPlate(String plate) {
         return automovilJPA.findByPlate(plate);
+    }
+
+    public void destroyAutomovilByPlate(String plate) {
+        try {
+            automovilJPA.destroyByPlate(plate);
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(ControladoraPersistencia.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
