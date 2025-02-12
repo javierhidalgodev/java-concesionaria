@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.mycompany.concesionaria.igu;
 
 import com.mycompany.concesionaria.logica.Automovil;
@@ -17,18 +13,38 @@ public class AutoForm extends javax.swing.JFrame {
 
     private Controladora controladora;
     private JFrame parentFrame;
+    private Automovil automovil;
+    private boolean isEditing;
 
-    /**
-     * Creates new form AutoForm
-     */
-    public AutoForm(Controladora controladora, JFrame parentFrame) {
+    public AutoForm(Controladora controladora, Home parentFrame) {
+        initComponents();
+
         this.controladora = controladora;
         this.parentFrame = parentFrame;
-
-        initComponents();
+        this.isEditing = false;
 
         setTitle("Auto Form");
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+    }
+
+    public AutoForm(Controladora controladora, DataView parentFrame, Automovil auto) {
+        initComponents();
+
+        this.controladora = controladora;
+        this.parentFrame = parentFrame;
+        this.automovil = auto;
+        this.isEditing = true;
+
+        txtMarca.setText(auto.getBrand());
+        txtModelo.setText(auto.getModel());
+        txtColor.setText(auto.getColor());
+        txtPlaca.setText(auto.getPlate());
+        btnCreate.setText("EDIT");
+
+        setTitle("Auto Form");
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     @SuppressWarnings("unchecked")
@@ -250,14 +266,39 @@ public class AutoForm extends javax.swing.JFrame {
 //        String puertas = txtPuertas.getText().trim();
 
         if (!marca.isEmpty() && !modelo.isEmpty() && !color.isEmpty() && !placa.isEmpty()) {
-            Automovil auto = new Automovil(marca, modelo, color, placa);
+            if (!isEditing) {
+                Automovil auto = new Automovil(marca, modelo, color, placa);
 
-            try {
-                controladora.createAutomovil(auto);
-            } catch (Exception e) {
-                System.err.println(e);
-                JOptionPane.showMessageDialog(pPrincipal, "Ya se ha registrado un auto con esa placa.\nSi cree que se trata de un error, póngase en contacto con nosotros.", "Error", 0);
+                try {
+                    controladora.createAutomovil(auto);
+
+                    txtMarca.setText("");
+                    txtModelo.setText("");
+                    txtColor.setText("");
+                    txtPlaca.setText("");
+
+                    JOptionPane.showMessageDialog(pPrincipal, "Coche añadido correctamente", "Operación exitosa", 1);
+                } catch (Exception e) {
+                    System.err.println(e);
+                    JOptionPane.showMessageDialog(pPrincipal, "Ya se ha registrado un auto con esa placa.\nSi cree que se trata de un error, póngase en contacto con nosotros.", "Error", 0);
+                }
+            } else {
+                automovil.setBrand(marca);
+                automovil.setModel(modelo);
+                automovil.setColor(color);
+                automovil.setPlate(placa);
+
+                try {
+                    controladora.editAutomovil(automovil);
+                    ((DataView) parentFrame).initTable();
+                    
+                    JOptionPane.showMessageDialog(pPrincipal, "Automóvil editado con éxito", "Actualización exitosa", JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(pPrincipal, "No se pudo realizar la operación. Inténtelo de nuevo más tarde", "Error al actualizar", JOptionPane.ERROR_MESSAGE);
+                }
             }
+
         } else {
             JOptionPane.showMessageDialog(pPrincipal, "Todos los campos marcados con * son obligatorios", "Formulario incompleto", 2);
         }
