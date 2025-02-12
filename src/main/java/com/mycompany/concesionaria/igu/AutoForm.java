@@ -4,8 +4,10 @@
  */
 package com.mycompany.concesionaria.igu;
 
+import com.mycompany.concesionaria.logica.Automovil;
 import com.mycompany.concesionaria.logica.Controladora;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -15,16 +17,16 @@ public class AutoForm extends javax.swing.JFrame {
 
     private Controladora controladora;
     private JFrame parentFrame;
-    
+
     /**
      * Creates new form AutoForm
      */
     public AutoForm(Controladora controladora, JFrame parentFrame) {
         this.controladora = controladora;
         this.parentFrame = parentFrame;
-        
+
         initComponents();
-        
+
         setTitle("Auto Form");
         setLocationRelativeTo(null);
     }
@@ -221,7 +223,7 @@ public class AutoForm extends javax.swing.JFrame {
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 69, Short.MAX_VALUE)
+            .addGap(0, 20, Short.MAX_VALUE)
         );
 
         pPrincipal.add(jPanel6, java.awt.BorderLayout.PAGE_END);
@@ -241,18 +243,35 @@ public class AutoForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        // TODO add your handling code here:
+        String marca = txtMarca.getText().trim();
+        String modelo = txtModelo.getText().trim();
+        String color = txtColor.getText().trim();
+        String placa = txtPlaca.getText().trim();
+//        String puertas = txtPuertas.getText().trim();
+
+        if (!marca.isEmpty() && !modelo.isEmpty() && !color.isEmpty() && !placa.isEmpty()) {
+            Automovil auto = new Automovil(marca, modelo, color, placa);
+
+            try {
+                controladora.createAutomovil(auto);
+            } catch (Exception e) {
+                System.err.println(e);
+                JOptionPane.showMessageDialog(pPrincipal, "Ya se ha registrado un auto con esa placa.\nSi cree que se trata de un error, póngase en contacto con nosotros.", "Error", 0);
+            }
+        } else {
+            JOptionPane.showMessageDialog(pPrincipal, "Todos los campos marcados con * son obligatorios", "Formulario incompleto", 2);
+        }
     }//GEN-LAST:event_btnCreateActionPerformed
 
     @Override
     public void dispose() {
-        if(parentFrame != null) {
+        if (parentFrame != null) {
             parentFrame.setVisible(true);
         }
-        
+
         super.dispose();
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreate;
     private javax.swing.JPanel jPanel1;

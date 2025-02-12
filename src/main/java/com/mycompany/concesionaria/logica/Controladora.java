@@ -11,7 +11,6 @@ public class Controladora {
     
     ControladoraPersistencia controladoraPersistencia = new ControladoraPersistencia();
     
-    
     // CRUD Automovil
     public void createAutomovil(Automovil automovil) {
         controladoraPersistencia.createAutomovil(automovil);
