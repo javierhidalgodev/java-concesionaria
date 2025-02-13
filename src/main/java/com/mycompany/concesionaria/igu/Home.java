@@ -10,7 +10,7 @@ public class Home extends javax.swing.JFrame {
 
     public Home() {
         initComponents();
-        
+
         setTitle("Concesionaria");
         setLocationRelativeTo(null);
     }
@@ -129,21 +129,25 @@ public class Home extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnViewDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewDataActionPerformed
-        Controladora controladora = new Controladora();
-        DataView dataViewFrame = new DataView(controladora, this);
-        
-        dataViewFrame.setVisible(true);
-        this.setVisible(false);
+        try {
+            Controladora controladora = new Controladora();
+            DataView dataViewFrame = new DataView(controladora, this);
+
+            dataViewFrame.setVisible(true);
+            this.setVisible(false);
+        } catch (Exception e) {
+            NotificationHandle.showErrorDialog(pPrincipal, Message.ERROR_CONEXION);
+        }
     }//GEN-LAST:event_btnViewDataActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnAutoFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutoFormActionPerformed
         Controladora controladora = new Controladora();
         AutoForm autoFormFrame = new AutoForm(controladora, this);
-        
+
         autoFormFrame.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnAutoFormActionPerformed

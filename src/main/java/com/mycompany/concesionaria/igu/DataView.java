@@ -4,7 +4,6 @@ import com.mycompany.concesionaria.logica.Automovil;
 import com.mycompany.concesionaria.logica.Controladora;
 import java.util.List;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -226,12 +225,14 @@ public class DataView extends javax.swing.JFrame {
                 try {
                     Automovil auto = controladora.findAutoByPlate(placa);
 
-                    AutoForm autoFormFrame = new AutoForm(controladora, this, auto);
+                    EditAuto editAutoFrame = new EditAuto(controladora, this, auto);
 
-                    autoFormFrame.setVisible(true);
+                    editAutoFrame.setVisible(true);
                     this.setVisible(false);
                 } catch (Exception e) {
                 }
+            } else {
+                NotificationHandle.showWarningDialog(pPrincipal, Message.SELECCIONE_REGISTRO);
             }
         }
 
@@ -240,9 +241,9 @@ public class DataView extends javax.swing.JFrame {
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         if (tableData.getRowCount() > 0) {
             if (tableData.getSelectedRow() != -1) {
-                int confirmation = JOptionPane.showConfirmDialog(pPrincipal, "¿Estás seguro que deseas eliminar este elemento? La operación es irreversible", "Confirmación de borrado", JOptionPane.YES_NO_OPTION);
-               
-                if(confirmation == 0) {
+                int confirmation = NotificationHandle.showConfirmationDialog(pPrincipal, Message.CONFIRMAR_ELIMINAR);
+
+                if (confirmation == 0) {
                     int row = tableData.getSelectedRow();
                     String plate = (String) tableData.getValueAt(row, 3);
 
@@ -251,11 +252,11 @@ public class DataView extends javax.swing.JFrame {
                         initTable();
                     } catch (Exception e) {
                         System.out.println("ERROR");
-                    }                    
+                    }
                 }
-                
+
             } else {
-                JOptionPane.showMessageDialog(pPrincipal, "Seleccione un registro para realizar la operación", "Falta registro", JOptionPane.WARNING_MESSAGE);
+                NotificationHandle.showWarningDialog(pPrincipal, Message.SELECCIONE_REGISTRO);
             }
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
