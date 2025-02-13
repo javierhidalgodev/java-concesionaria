@@ -308,7 +308,7 @@ public class EditAuto extends javax.swing.JFrame {
 
         super.dispose();
     }
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEdit;
     private javax.swing.JPanel jPanel1;

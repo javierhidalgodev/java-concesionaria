@@ -14,7 +14,7 @@ public enum Message {
     CONFIRMAR_EDITAR("¿Seguro que desea editar este registro?", "Confirme edición"),
     CONFIRMAR_ELIMINAR("¿Estás seguro que deseas eliminar este elemento? La operación es irreversible", "Confirmación de borrado"),
     SELECCIONE_REGISTRO("Seleccione un registro para realizar la operación", "Falta registro"),
-    ERROR_CONEXION("\"No se puedo conectar con el sistema de datos.\\nInténtelo de nuevo más tarde", "Error de conexión");
+    ERROR_CONEXION("No se puedo conectar con el sistema de datos.\nInténtelo de nuevo más tarde", "Error de conexión");
     
     private String message;
     private String title;

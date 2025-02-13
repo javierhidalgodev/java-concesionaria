@@ -8,7 +8,7 @@ import javax.swing.JFrame;
  *
  * @author Javi
  */
-public class AutoForm extends javax.swing.JFrame {
+public class AutoForm extends javax.swing.JFrame implements FormCreate {
 
     private Controladora controladora;
     private JFrame parentFrame;
@@ -236,22 +236,16 @@ public class AutoForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateActionPerformed
-        String marca = txtMarca.getText().trim();
-        String modelo = txtModelo.getText().trim();
-        String color = txtColor.getText().trim();
-        String placa = txtPlaca.getText().trim();
-//        String puertas = txtPuertas.getText().trim();
-
-        if (!marca.isEmpty() && !modelo.isEmpty() && !color.isEmpty() && !placa.isEmpty()) {
-            createAuto(marca, modelo, color, placa);
+        if (isValidForm()) {
+            Automovil formData = getData();
+            
+            createAuto(formData);
         } else {
             NotificationHandle.showWarningDialog(pPrincipal, Message.FALTAN_DATOS);
         }
     }//GEN-LAST:event_btnCreateActionPerformed
 
-    private void createAuto(String marca, String modelo, String color, String placa) {
-        Automovil auto = new Automovil(marca, modelo, color, placa);
-
+    private void createAuto(Automovil auto) {
         try {
             controladora.createAutomovil(auto);
 
@@ -265,6 +259,24 @@ public class AutoForm extends javax.swing.JFrame {
             System.err.println(e);
             NotificationHandle.showErrorDialog(pPrincipal, Message.COCHE_REPETIDO);
         }
+    }
+
+    @Override
+    public boolean isValidForm() {
+        return !txtMarca.getText().trim().isEmpty() && !txtModelo.getText().trim().isEmpty() && !txtColor.getText().trim().isEmpty() && !txtPlaca.getText().trim().isEmpty();
+    }
+
+    @Override
+    public Automovil getData() {
+        String marca = txtMarca.getText().trim();
+        String modelo = txtModelo.getText().trim();
+        String color = txtColor.getText().trim();
+        String placa = txtPlaca.getText().trim();
+//        String puertas = txtPuertas.getText().trim();
+
+        Automovil formData = new Automovil(marca, modelo, color, placa);
+
+        return formData;
     }
 
     @Override

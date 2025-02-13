@@ -145,11 +145,16 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnAutoFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAutoFormActionPerformed
-        Controladora controladora = new Controladora();
-        AutoForm autoFormFrame = new AutoForm(controladora, this);
+        try {
+            Controladora controladora = new Controladora();
+            AutoForm autoFormFrame = new AutoForm(controladora, this);
 
-        autoFormFrame.setVisible(true);
-        this.setVisible(false);
+            autoFormFrame.setVisible(true);
+            this.setVisible(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            NotificationHandle.showErrorDialog(pPrincipal, Message.ERROR_CONEXION);
+        }
     }//GEN-LAST:event_btnAutoFormActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
